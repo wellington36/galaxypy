@@ -1,6 +1,6 @@
 def transform(self, x, y):
-	#return self.transform_2D(x, y)
-	return self.tranform_perspective(x, y)
+	return self.transform_2D(x, y)
+	#return self.tranform_perspective(x, y)
 
 
 def transform_2D(self, x, y):
@@ -20,5 +20,5 @@ def tranform_perspective(self, x, y):
 
 	tr_x = self.perspective_point_x + diff_x*factor_y
 	tr_y = self.perspective_point_y - factor_y * self.perspective_point_y
-    
+
 	return int(tr_x), int(tr_y)

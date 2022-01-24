@@ -68,29 +68,34 @@ class MainWidget(Widget):
 			for i in range(0, self.H_NB_LINES):
 				self.horizontal_lines.append(Line())
 
+
+	def get_line_x_from_index(self, index):
+		central_line_x = self.perspective_point_x
+		spacing = self.V_LINES_SPACING * self.width
+		offset = index - 0.5
+		line_x = central_line_x + offset * spacing + self.current_offset_x
+
+		return line_x
+
 		
 	def update_vertical_lines(self):
-		spacing = self.V_LINES_SPACING * self.width
-		central_line_x = int(self.width / 2)
-		offset = -int(self.V_NB_LINES/2) + 0.5	# -n ... 0 ... +n
-		
-		for i in range(0, self.V_NB_LINES):
-			line_x = central_line_x + offset * spacing + self.current_offset_x
+		start_index = -int(self.V_NB_LINES / 2) + 1
+
+		for i in range(start_index, self.V_NB_LINES + start_index):
+			line_x = self.get_line_x_from_index(i)
 			
 			x1, y1 = self.transform(line_x, 0)
 			x2, y2 = self.transform(line_x, self.height)
 			
 			self.vertical_lines[i].points = [x1, y1, x2, y2]
-			offset += 1
 
 
 	def update_horizontal_lines(self):
-		central_line_x = int(self.width / 2)
-		spacing = self.V_LINES_SPACING * self.width
-		offset = -int(self.V_NB_LINES / 2) + 0.5
+		start_index = -int(self.V_NB_LINES / 2) + 1
+		end_index = start_index + self.V_NB_LINES - 1
 
-		xmin = central_line_x + offset*spacing + self.current_offset_x
-		xmax = central_line_x - offset*spacing + self.current_offset_x
+		xmin = self.get_line_x_from_index(start_index)
+		xmax = self.get_line_x_from_index(end_index)
 		spacing_y = self.H_LINES_SPACING * self.height
 		
 		for i in range(0, self.V_NB_LINES):
@@ -110,13 +115,13 @@ class MainWidget(Widget):
 
 		self.update_vertical_lines()
 		self.update_horizontal_lines()
-		self.current_offset_y += self.SPEED * time_factor
+		#self.current_offset_y += self.SPEED * time_factor
 
 		spacing_y = self.H_LINES_SPACING * self.height
 		if self.current_offset_y >= spacing_y:
 			self.current_offset_y -= spacing_y
 
-		self.current_offset_x += self.current_speed_x * self.SPEED_X * time_factor
+		#self.current_offset_x += self.current_speed_x * self.SPEED_X * time_factor
 
 
 class GalaxyApp(App):
