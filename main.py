@@ -1,5 +1,6 @@
 from kivy.app import App
 from kivy.uix.widget import Widget
+from kivy.properties import Clock
 from kivy.properties import NumericProperty
 from kivy.graphics.vertex_instructions import Line
 from kivy.graphics.context_instructions import Color
@@ -8,6 +9,7 @@ from kivy.graphics.context_instructions import Color
 class MainWidget(Widget):
 	perspective_point_x = NumericProperty(0)
 	perspective_point_y = NumericProperty(0)
+	current_offset_y = NumericProperty(0)
 	
 	V_NB_LINES = 8		# number of lines
 	V_LINES_SPACING = 0.25		# persentage in screen width
@@ -16,12 +18,15 @@ class MainWidget(Widget):
 	H_NB_LINES = 16		# number of lines
 	H_LINES_SPACING = 0.1		# persentage in screen height
 	horizontal_lines = []
+
+	SPEED = 4
 	
 	def __init__(self, **kwargs):
 		super(MainWidget, self).__init__(**kwargs)
 		# print("INIT W:" + str(self.width) + " H:" + str(self.height))
 		self.init_vertical_lines()
 		self.init_horizontal_lines()
+		Clock.schedule_interval(self.update, 1.0 / 60)
 	
 	
 	def on_parent(self, widget, parent):
@@ -33,8 +38,9 @@ class MainWidget(Widget):
 		#print("ON SIZE W:" + str(self.width) + " H:" + str(self.height))
 		self.perspective_point_x = self.width/2
 		self.perspective_point_y = self.height * 0.75
-		self.update_vertical_lines()
-		self.update_horizontal_lines()
+		#self.update_vertical_lines()
+		#self.update_horizontal_lines()
+		pass
 	
 	
 	def on_perspective_point_x(self, widget, value):
@@ -88,7 +94,7 @@ class MainWidget(Widget):
 		spacing_y = self.H_LINES_SPACING * self.height
 		
 		for i in range(0, self.V_NB_LINES):
-			line_y = i * spacing_y
+			line_y = i * spacing_y - self.current_offset_y
 			
 			x1, y1 = self.transform(xmin, line_y)
 			x2, y2 = self.transform(xmax, line_y)
@@ -122,6 +128,16 @@ class MainWidget(Widget):
 		return int(tr_x), int(tr_y)
 	
 	
+	def update(self, dt):
+		#print("update")
+		self.update_vertical_lines()
+		self.update_horizontal_lines()
+		self.current_offset_y += self.SPEED
+
+		spacing_y = self.H_LINES_SPACING * self.height
+		if self.current_offset_y >= spacing_y:
+			self.current_offset_y -= spacing_y
+
 
 class GalaxyApp(App):
 	pass
