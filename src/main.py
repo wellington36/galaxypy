@@ -1,20 +1,21 @@
 from kivy.config import Config
+
 Config.set('graphics', 'width', '900')
 Config.set('graphics', 'height', '400')
 
 from kivy import platform
 from kivy.app import App
-from kivy.properties import Clock
-from kivy.properties import NumericProperty
-from kivy.uix.widget import Widget
 from kivy.core.window import Window
-from kivy.graphics.vertex_instructions import Line
 from kivy.graphics.context_instructions import Color
+from kivy.graphics.vertex_instructions import Line, Quad
+from kivy.properties import Clock, NumericProperty
+from kivy.uix.widget import Widget
 
 
 class MainWidget(Widget):
-	from transforms import transform, tranform_perspective, transform_2D
-	from user_actions import keyboard_closed, on_keyboard_down, on_keyboard_up, on_touch_down, on_touch_up
+	from transforms import tranform_perspective, transform, transform_2D
+	from user_actions import (keyboard_closed, on_keyboard_down, on_keyboard_up,
+	                          on_touch_down, on_touch_up)
 
 	perspective_point_x = NumericProperty(0)
 	perspective_point_y = NumericProperty(0)
@@ -30,13 +31,22 @@ class MainWidget(Widget):
 	H_LINES_SPACING = 0.1		# percentage in screen height
 	horizontal_lines = []
 
-	SPEED = 4
+	SPEED = 1
 	SPEED_X = 4
+
+	NB_TILES = 8
+	tiles = []
+	tiles_coordinates = []
+
+	current_y_loop = 0
+
 	
 	def __init__(self, **kwargs):
 		super(MainWidget, self).__init__(**kwargs)
 		self.init_vertical_lines()
 		self.init_horizontal_lines()
+		self.init_tiles()
+		self.generate_tile_coordinates()
 
 		if self.is_desktop():
 			self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
@@ -52,11 +62,23 @@ class MainWidget(Widget):
 		else:
 			return False
 	
+	def init_tiles(self):
+		with self.canvas:
+			Color(1, 1, 1)
+			
+			for i in range(0, self.NB_TILES):
+				self.tiles.append(Quad())
+
+
+	def generate_tile_coordinates(self):
+		for i in range(0, self.NB_TILES):
+			self.tiles_coordinates.append((0, i))
+
 
 	def init_vertical_lines(self):
 		with self.canvas:
 			Color(1, 1, 1)
-			# self.line = Line(points=[self.width/2, 0, self.width/2, 100])
+
 			for i in range(0, self.V_NB_LINES):
 				self.vertical_lines.append(Line())
 
@@ -76,6 +98,38 @@ class MainWidget(Widget):
 		line_x = central_line_x + offset * spacing + self.current_offset_x
 
 		return line_x
+	
+
+	def get_line_y_from_index(self, index):
+		spacing_y = self.H_LINES_SPACING * self.height
+		line_y = index * spacing_y - self.current_offset_y
+		
+		return line_y
+
+	
+	def get_tile_coordinates(self, ti_x, ti_y):
+		ti_y = ti_y - self.current_y_loop
+
+		x = self.get_line_x_from_index(ti_x)
+		y = self.get_line_y_from_index(ti_y)
+
+		return x, y
+	
+
+	def update_tiles(self):
+		for i in range(0, self.NB_TILES):
+			tile = self.tiles[i]
+			tile_coordinates = self.tiles_coordinates[i]
+
+			xmin, ymin = self.get_tile_coordinates(tile_coordinates[0], tile_coordinates[1])
+			xmax, ymax = self.get_tile_coordinates(tile_coordinates[0] + 1, tile_coordinates[1] + 1)
+
+			x1, y1 = self.transform(xmin, ymin)
+			x2, y2 = self.transform(xmin, ymax)
+			x3, y3 = self.transform(xmax, ymax)
+			x4, y4 = self.transform(xmax, ymin)
+
+			tile.points = [x1, y1, x2, y2, x3, y3, x4, y4]
 
 		
 	def update_vertical_lines(self):
@@ -96,10 +150,9 @@ class MainWidget(Widget):
 
 		xmin = self.get_line_x_from_index(start_index)
 		xmax = self.get_line_x_from_index(end_index)
-		spacing_y = self.H_LINES_SPACING * self.height
 		
 		for i in range(0, self.V_NB_LINES):
-			line_y = i * spacing_y - self.current_offset_y
+			line_y = self.get_line_y_from_index(i)
 			
 			x1, y1 = self.transform(xmin, line_y)
 			x2, y2 = self.transform(xmax, line_y)
@@ -115,11 +168,15 @@ class MainWidget(Widget):
 
 		self.update_vertical_lines()
 		self.update_horizontal_lines()
+		self.update_tiles()
 		self.current_offset_y += self.SPEED * time_factor
 
 		spacing_y = self.H_LINES_SPACING * self.height
 		if self.current_offset_y >= spacing_y:
 			self.current_offset_y -= spacing_y
+			self.current_y_loop += 1
+
+			print("loop: " + str(self.current_y_loop))
 
 		self.current_offset_x += self.current_speed_x * self.SPEED_X * time_factor
 
