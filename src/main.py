@@ -23,11 +23,11 @@ class MainWidget(Widget):
 	current_speed_x = NumericProperty(0)
 	
 	V_NB_LINES = 8		# number of lines
-	V_LINES_SPACING = 0.25		# persentage in screen width
+	V_LINES_SPACING = 0.25		# percentage in screen width
 	vertical_lines = []
 
 	H_NB_LINES = 16		# number of lines
-	H_LINES_SPACING = 0.1		# persentage in screen height
+	H_LINES_SPACING = 0.1		# percentage in screen height
 	horizontal_lines = []
 
 	SPEED = 4
@@ -115,13 +115,13 @@ class MainWidget(Widget):
 
 		self.update_vertical_lines()
 		self.update_horizontal_lines()
-		#self.current_offset_y += self.SPEED * time_factor
+		self.current_offset_y += self.SPEED * time_factor
 
 		spacing_y = self.H_LINES_SPACING * self.height
 		if self.current_offset_y >= spacing_y:
 			self.current_offset_y -= spacing_y
 
-		#self.current_offset_x += self.current_speed_x * self.SPEED_X * time_factor
+		self.current_offset_x += self.current_speed_x * self.SPEED_X * time_factor
 
 
 class GalaxyApp(App):
