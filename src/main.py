@@ -1,3 +1,4 @@
+import random
 from kivy.config import Config
 
 Config.set('graphics', 'width', '900')
@@ -31,10 +32,10 @@ class MainWidget(Widget):
 	H_LINES_SPACING = 0.1		# percentage in screen height
 	horizontal_lines = []
 
-	SPEED = 1
+	SPEED = 3
 	SPEED_X = 4
 
-	NB_TILES = 8
+	NB_TILES = 30
 	tiles = []
 	tiles_coordinates = []
 
@@ -46,6 +47,7 @@ class MainWidget(Widget):
 		self.init_vertical_lines()
 		self.init_horizontal_lines()
 		self.init_tiles()
+		self.pre_filltiles_coordinates()
 		self.generate_tile_coordinates()
 
 		if self.is_desktop():
@@ -70,9 +72,50 @@ class MainWidget(Widget):
 				self.tiles.append(Quad())
 
 
+	def pre_filltiles_coordinates(self):
+		for i in range(0, 10):
+			self.tiles_coordinates.append((0, i))		
+
+
 	def generate_tile_coordinates(self):
-		for i in range(0, self.NB_TILES):
-			self.tiles_coordinates.append((0, i))
+		last_x = 0
+		last_y = 0
+
+		for i in range(len(self.tiles_coordinates) - 1, -1, -1):
+			if self.tiles_coordinates[i][1] < self.current_y_loop:
+				del self.tiles_coordinates[i]
+		
+		if len(self.tiles_coordinates) > 0:
+			last_coordinates = self.tiles_coordinates[-2]
+			last_y = last_coordinates[1] + 1
+			last_x = last_coordinates[0]
+
+		for i in range(len(self.tiles_coordinates), self.NB_TILES):
+			start_index = -int(self.V_NB_LINES / 2) + 1
+			end_index = start_index + self.V_NB_LINES - 2
+			r1 = random.randint(0, 2)
+			r2 = random.randint(start_index, end_index)
+
+			if last_x <= start_index:
+				r1 = 1
+			if last_x >= end_index:
+				r1 = 2
+
+			self.tiles_coordinates.append((last_x, last_y))
+			self.tiles_coordinates.append((r2, last_y))
+			if (r1 == 1):
+				last_x += 1
+				self.tiles_coordinates.append((last_x, last_y))
+				last_y += 1
+				self.tiles_coordinates.append((last_x, last_y))
+			if (r1 == 2):
+				last_x -= 1
+				self.tiles_coordinates.append((last_x, last_y))
+				last_y += 1
+				self.tiles_coordinates.append((last_x, last_y))
+			
+			
+			last_y += 1
 
 
 	def init_vertical_lines(self):
@@ -175,7 +218,8 @@ class MainWidget(Widget):
 		if self.current_offset_y >= spacing_y:
 			self.current_offset_y -= spacing_y
 			self.current_y_loop += 1
-
+			
+			self.generate_tile_coordinates()
 			print("loop: " + str(self.current_y_loop))
 
 		self.current_offset_x += self.current_speed_x * self.SPEED_X * time_factor
