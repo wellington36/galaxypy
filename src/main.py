@@ -97,14 +97,28 @@ class MainWidget(Widget):
 		self.ship.points = [x1, y1, x2, y2, x3, y3]
 
 
-	def check_ship_collision_with_tle(self, ti_x, ti_y):
+	def check_ship_collision(self):
+		for i in range(0, len(self.tiles_coordinates)):
+			ti_x, ti_y = self.tiles_coordinates[i]
+			
+			if ti_y > self.current_y_loop + 1:
+				return False
+			
+			if self.check_ship_collision_with_tile(ti_x, ti_y):
+				return True
+
+		return False
+
+	def check_ship_collision_with_tile(self, ti_x, ti_y):
 		xmin, ymin = self.get_tile_coordinates(ti_x, ti_y)
 		xmax, ymax = self.get_tile_coordinates(ti_x + 1, ti_y + 1)
 
-		g_point_ship_x = [self.get_tile_coordinates[i][0] for i in [0, 1, 2]].sum()
-		g_point_ship_y = [self.get_tile_coordinates[i][1] for i in [0, 1, 2]].sum()
+		g_point_ship_x = sum([self.ship_coordinates[i][0] for i in [0, 1, 2]]) / 3
+		g_point_ship_y = sum([self.ship_coordinates[i][1] for i in [0, 1, 2]]) / 3
 
-		pass
+		if xmin <= g_point_ship_x <= xmax and ymin <= g_point_ship_y <= ymax:
+			return True
+		return False
 
 
 	def init_tiles(self):
@@ -270,6 +284,9 @@ class MainWidget(Widget):
 
 		speed_x = self.current_speed_x * self.width / 100
 		self.current_offset_x += speed_x * self.SPEED_X * time_factor
+
+		if not self.check_ship_collision():
+			print("GAME OVER")
 
 
 class GalaxyApp(App):
