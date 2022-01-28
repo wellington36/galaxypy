@@ -33,8 +33,8 @@ class MainWidget(Widget):
 	horizontal_lines = []
 	current_y_loop = 0
 
-	SPEED = 3
-	SPEED_X = 4
+	SPEED = .5
+	SPEED_X = 1.0
 
 	NB_TILES = 30
 	tiles = []
@@ -44,6 +44,9 @@ class MainWidget(Widget):
 	SHIP_HEIGHT = 0.035
 	SHIP_BASE_Y = 0.04
 	ship = None
+	ship_coordinates = [(0, 0), (0, 0), (0, 0)]
+
+	
 
 	
 	def __init__(self, **kwargs):
@@ -83,13 +86,27 @@ class MainWidget(Widget):
 		ship_half_width = self.SHIP_WIDTH * self.width / 2
 		ship_height = self.SHIP_HEIGHT * self.height
 
-		x1, y1 = self.transform(center_x - ship_half_width, base_y)
-		x2, y2 = self.transform(center_x, base_y + ship_height)
-		x3, y3 = self.transform(center_x + ship_half_width, base_y)
+		self.ship_coordinates[0] = (center_x - ship_half_width, base_y)
+		self.ship_coordinates[1] = (center_x, base_y + ship_height)
+		self.ship_coordinates[2] = (center_x + ship_half_width, base_y)
+
+		x1, y1 = self.transform(*self.ship_coordinates[0])
+		x2, y2 = self.transform(*self.ship_coordinates[1])
+		x3, y3 = self.transform(*self.ship_coordinates[2])
 
 		self.ship.points = [x1, y1, x2, y2, x3, y3]
 
-	
+
+	def check_ship_collision_with_tle(self, ti_x, ti_y):
+		xmin, ymin = self.get_tile_coordinates(ti_x, ti_y)
+		xmax, ymax = self.get_tile_coordinates(ti_x + 1, ti_y + 1)
+
+		g_point_ship_x = [self.get_tile_coordinates[i][0] for i in [0, 1, 2]].sum()
+		g_point_ship_y = [self.get_tile_coordinates[i][1] for i in [0, 1, 2]].sum()
+
+		pass
+
+
 	def init_tiles(self):
 		with self.canvas:
 			Color(1, 1, 1)
@@ -128,7 +145,7 @@ class MainWidget(Widget):
 				r1 = 2
 
 			self.tiles_coordinates.append((last_x, last_y))
-			self.tiles_coordinates.append((r2, last_y))
+			#self.tiles_coordinates.append((r2, last_y))
 			if (r1 == 1):
 				last_x += 1
 				self.tiles_coordinates.append((last_x, last_y))
@@ -239,7 +256,9 @@ class MainWidget(Widget):
 		self.update_horizontal_lines()
 		self.update_tiles()
 		self.update_ship()
-		self.current_offset_y += self.SPEED * time_factor
+
+		speed_y = self.SPEED * self.height / 100
+		self.current_offset_y += speed_y * time_factor
 
 		spacing_y = self.H_LINES_SPACING * self.height
 		if self.current_offset_y >= spacing_y:
@@ -249,7 +268,8 @@ class MainWidget(Widget):
 			self.generate_tile_coordinates()
 			print("loop: " + str(self.current_y_loop))
 
-		self.current_offset_x += self.current_speed_x * self.SPEED_X * time_factor
+		speed_x = self.current_speed_x * self.width / 100
+		self.current_offset_x += speed_x * self.SPEED_X * time_factor
 
 
 class GalaxyApp(App):
