@@ -40,8 +40,8 @@ class MainWidget(RelativeLayout):
 	horizontal_lines = []
 	current_y_loop = 0
 
-	SPEED = .5
-	SPEED_X = 1.0
+	SPEED = .6
+	SPEED_X = 1.5
 
 	NB_TILES = 40
 	tiles = []
