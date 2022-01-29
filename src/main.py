@@ -36,7 +36,7 @@ class MainWidget(Widget):
 	SPEED = .5
 	SPEED_X = 1.0
 
-	NB_TILES = 30
+	NB_TILES = 40
 	tiles = []
 	tiles_coordinates = []
 
@@ -276,7 +276,7 @@ class MainWidget(Widget):
 			self.current_offset_y += speed_y * time_factor
 
 			spacing_y = self.H_LINES_SPACING * self.height
-			if self.current_offset_y >= spacing_y:
+			while self.current_offset_y >= spacing_y:
 				self.current_offset_y -= spacing_y
 				self.current_y_loop += 1
 			
@@ -284,7 +284,7 @@ class MainWidget(Widget):
 				print("loop: " + str(self.current_y_loop))
 		
 			speed_x = self.current_speed_x * self.width / 100
-			self.current_offset_x += speed_x * self.SPEED_X * time_factor
+			self.current_offset_x += speed_x * time_factor
 
 		if not self.check_ship_collision() and not self.state_game_over:
 			self.state_game_over = True
