@@ -4,6 +4,18 @@ MainWidget:
 
 
 <MainWidget>:
+    canvas.before:
+        Rectangle:
+            size: self.size
+            source: 'images/planet.webp'
     menu_widget: menu_widget
+    
     MenuWidget:
         id: menu_widget
+    
+    Label:
+        text: root.score_text
+        font_size: dp(20)
+        font_name: 'fonts/Eurostile.ttf'
+        size_hint: .15, .10
+        pos_hint: {"x": 0, "top": 1}
