@@ -85,6 +85,7 @@ class MainWidget(RelativeLayout):
 		self.current_offset_y = 0
 		self.current_y_loop = 0
 		self.current_speed_x = 0
+		self.level = "LEVEL: 1"
 		self.score_text = "SCORE: 0"
 
 		self.tiles_coordinates = []
