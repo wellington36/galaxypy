@@ -64,7 +64,7 @@ class MainWidget(Widget):
 			self._keyboard.bind(on_key_down=self.on_keyboard_down)
 			self._keyboard.bind(on_key_up=self.on_keyboard_up)
 
-		Clock.schedule_interval(self.update, 1.0 / 60)	# 60 fps
+		Clock.schedule_interval(self.update, 1.0 / 60.0)	# 60 fps
 	
 
 	def is_desktop(self):
@@ -108,6 +108,7 @@ class MainWidget(Widget):
 				return True
 
 		return False
+
 
 	def check_ship_collision_with_tile(self, ti_x, ti_y):
 		xmin, ymin = self.get_tile_coordinates(ti_x, ti_y)
@@ -261,7 +262,7 @@ class MainWidget(Widget):
 
 
 	def update(self, dt):
-		time_factor = dt*60
+		time_factor = dt*60.0
 
 		self.perspective_point_x = self.width/2
 		self.perspective_point_y = self.height * 0.75
