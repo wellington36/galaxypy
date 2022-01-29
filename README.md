@@ -1,5 +1,6 @@
 # GalaxyPy
-Personal version of galaxy project for learn and fun.
+Personal version of game galaxy for learn and fun.
+![image](https://user-images.githubusercontent.com/61877847/151664393-af857bfd-d3cf-4221-874f-8f565fd56564.png)
 
 # Usage
 
