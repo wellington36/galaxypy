@@ -40,8 +40,8 @@ class MainWidget(RelativeLayout):
 	horizontal_lines = []
 	current_y_loop = 0
 
-	SPEED = .5
-	SPEED_X = 1.0
+	SPEED = 0.5          # 0.5 and 1.5
+	SPEED_X = 1.5
 
 	NB_TILES = 40
 	tiles = []
@@ -59,6 +59,7 @@ class MainWidget(RelativeLayout):
 	menu_title = StringProperty("G  A  L  A  X  Y")
 	menu_button_title = StringProperty("START")
 	score_text = StringProperty("SCORE: 0")
+	level = StringProperty("LEVEL: 1")
 
 	
 	def __init__(self, **kwargs):
@@ -84,6 +85,7 @@ class MainWidget(RelativeLayout):
 		self.current_offset_y = 0
 		self.current_y_loop = 0
 		self.current_speed_x = 0
+		self.level = "LEVEL: 1"
 		self.score_text = "SCORE: 0"
 
 		self.tiles_coordinates = []
@@ -308,6 +310,11 @@ class MainWidget(RelativeLayout):
 				self.current_y_loop += 1
 				self.score_text = "SCORE: " + str(self.current_y_loop)
 			
+				if (self.current_y_loop / 50.0).is_integer():
+					self.SPEED += 0.1
+					self.SPEED_X += 0.2
+					self.level = "LEVEL: " + str(int(self.current_y_loop / 50 + 1))
+
 				self.generate_tile_coordinates()
 				print("loop: " + str(self.current_y_loop))
 		
