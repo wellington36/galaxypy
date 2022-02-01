@@ -87,6 +87,8 @@ class MainWidget(RelativeLayout):
 		self.current_speed_x = 0
 		self.level = "LEVEL: 1"
 		self.score_text = "SCORE: 0"
+		self.SPEED = 0.5
+		self.SPEED_X = 1.5
 
 		self.tiles_coordinates = []
 		self.pre_fill_tiles_coordinates()
