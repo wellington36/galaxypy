@@ -325,7 +325,7 @@ class MainWidget(RelativeLayout):
 
 		if not self.check_ship_collision() and not self.state_game_over:
 			self.state_game_over = True
-			self.menu_title = "G  A  M  E  R    O  V  E  R"
+			self.menu_title = "G  A  M  E    O  V  E  R"
 			self.menu_button_title = "RESTART"
 			self.menu_widget.opacity = 1
 			print("GAME OVER")
