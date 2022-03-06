@@ -5,8 +5,8 @@ Personal version of game galaxy for learn and fun.
 
 # Usage
 
-Clone this repository and run (with python3.9 because the `kivy` library might not work well with python3.10).
+Clone this repository and run `main.py`.
 
 ```bash
-python3.9 galaxypy/src/main.py
+python galaxypy/src/main.py
 ```
