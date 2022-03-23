@@ -8,5 +8,5 @@ Personal version of game galaxy for learn and fun.
 Clone this repository and run `main.py`.
 
 ```bash
-python galaxypy/src/main.py
+python3.9 galaxypy/src/main.py
 ```
