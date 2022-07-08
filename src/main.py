@@ -14,7 +14,7 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.properties import Clock, NumericProperty
 from kivy.graphics.context_instructions import Color
 from kivy.properties import ObjectProperty, StringProperty
-from kivy.graphics.vertex_instructions import Line, Quad, Triangle
+from kivy.graphics.vertex_instructions import Line, Quad, Triangle, Rectangle
 
 Builder.load_file("menu.kv")
 
@@ -48,8 +48,6 @@ class MainWidget(RelativeLayout):
 	tiles = []
 	tiles_coordinates = []
 
-	SHIP_WIDTH = 0.1
-	SHIP_HEIGHT = 0.035
 	SHIP_BASE_Y = 0.04
 	ship = None
 	ship_coordinates = [(0, 0), (0, 0), (0, 0)]
@@ -132,25 +130,29 @@ class MainWidget(RelativeLayout):
 
 	def init_ship(self):
 		with self.canvas:
-			Color(0, 0, 0)
-			self.ship = Triangle()
+			#Color(0, 0, 0)
+			#self.ship = Triangle()
+
+			self.ship = Rectangle(pos=(self.width/2, 10), size=(75, 75), source='images/ship2.png')
+			print(self.width)
 	
 
 	def update_ship(self):
-		center_x = self.width / 2
-		base_y = self.SHIP_BASE_Y * self.height
-		ship_half_width = self.SHIP_WIDTH * self.width / 2
-		ship_height = self.SHIP_HEIGHT * self.height
+		#center_x = self.width / 2
+		#base_y = self.SHIP_BASE_Y * self.height
+		#ship_half_width = self.SHIP_WIDTH * self.width / 2
+		#ship_height = self.SHIP_HEIGHT * self.height
 
-		self.ship_coordinates[0] = (center_x - ship_half_width, base_y)
-		self.ship_coordinates[1] = (center_x, base_y + ship_height)
-		self.ship_coordinates[2] = (center_x + ship_half_width, base_y)
+		#self.ship_coordinates[0] = (center_x - ship_half_width, base_y)
+		#self.ship_coordinates[1] = (center_x, base_y + ship_height)
+		#self.ship_coordinates[2] = (center_x + ship_half_width, base_y)
 
-		x1, y1 = self.transform(*self.ship_coordinates[0])
-		x2, y2 = self.transform(*self.ship_coordinates[1])
-		x3, y3 = self.transform(*self.ship_coordinates[2])
+		#x1, y1 = self.transform(*self.ship_coordinates[0])
+		#x2, y2 = self.transform(*self.ship_coordinates[1])
+		#x3, y3 = self.transform(*self.ship_coordinates[2])
 
-		self.ship.points = [x1, y1, x2, y2, x3, y3]
+		#self.ship.points = [x1, y1, x2, y2, x3, y3]
+		self.ship.pos = (self.width/2 - self.ship.size[0]/2, 10)
 
 
 	def check_ship_collision(self):
@@ -170,12 +172,10 @@ class MainWidget(RelativeLayout):
 		xmin, ymin = self.get_tile_coordinates(ti_x, ti_y)
 		xmax, ymax = self.get_tile_coordinates(ti_x + 1, ti_y + 1)
 
-		g_point_ship_x = sum([self.ship_coordinates[i][0] for i in [0, 1, 2]]) / 3
-		g_point_ship_y = sum([self.ship_coordinates[i][1] for i in [0, 1, 2]]) / 3
+		g_point_ship_x = self.width/2
+		g_point_ship_y = 10
 
-		if xmin <= g_point_ship_x <= xmax and ymin <= g_point_ship_y <= ymax:
-			return True
-		return False
+		return (xmin <= g_point_ship_x <= xmax and ymin <= g_point_ship_y <= ymax)
 
 
 	def init_tiles(self):
