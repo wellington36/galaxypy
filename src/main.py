@@ -15,13 +15,13 @@ from kivy.properties import Clock, NumericProperty
 from kivy.graphics.context_instructions import Color
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.graphics.vertex_instructions import Line, Quad, Triangle, Rectangle
-from user_actions import *
-from transforms import *
 
 Builder.load_file("menu.kv")
 
 
 class MainWidget(RelativeLayout):
+	from transforms import transform, tranform_perspective, transform_2D
+	from user_actions import keyboard_closed, on_keyboard_down, on_keyboard_up, on_touch_down, on_touch_up
 	menu_widget = ObjectProperty()
 
 	perspective_point_x = NumericProperty(0)
