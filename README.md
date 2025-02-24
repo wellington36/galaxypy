@@ -5,7 +5,7 @@ Personal version of game galaxy for learn and fun.
 
 # Usage
 
-Clone this repository and in the repository run:
+Clone this repository and in the repository run (make sure you have the `kivy` library installed):
 
 ```bash
 python src/main.py
